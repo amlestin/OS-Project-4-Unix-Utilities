@@ -43,7 +43,10 @@ int main(int argc, char *argv[]) {
     printf("File: `%s", path_to_file_name(path)); printf("'\n");
 
     // Size:
-    printf("Size: %d\t", buf->st_size);
+    printf("Size: %d\t\t", buf->st_size);
+
+    //Blocks:
+    printf("Blocks: %d\t\t", buf->st_blocks);
     printf("\n");
 
     // Blocks: IO Block:   [type of file]
