@@ -41,10 +41,10 @@ int main(int argc, char *argv[]) {
 
 
     // File:
-    printf("File: `%s", path_to_file_name(path)); printf("'\n");
+    printf("  File: `%s", path_to_file_name(path)); printf("'\n");
 
     // Size:
-    printf("Size: %d\t\t", buf->st_size);
+    printf("  Size: %d\t\t", buf->st_size);
 
     // Blocks:
     printf("Blocks: %d\t\t", buf->st_blocks);
