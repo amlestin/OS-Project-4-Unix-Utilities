@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <time.h>
 #include <string.h>
 #include <stdlib.h>
 #include <sys/stat.h>
@@ -30,7 +31,7 @@ int main(int argc, char *argv[]) {
     }
 
     char *path = argv[1];
-    struct stat *buf;
+    struct stat *buf = malloc(sizeof(struct stat));
 
     int err = stat(path, buf);
     if (err == -1) {
@@ -45,12 +46,75 @@ int main(int argc, char *argv[]) {
     // Size:
     printf("Size: %d\t\t", buf->st_size);
 
-    //Blocks:
+    // Blocks:
     printf("Blocks: %d\t\t", buf->st_blocks);
+
+    // IO Block
+    printf("IO Block: %d\t\t", buf->st_blksize);
+
+    // type of file
+    switch(buf->st_mode & S_IFMT) {
+        case S_IFBLK:
+            printf("block device");
+            break;
+        case S_IFCHR:
+            printf("character device");
+            break;
+        case S_IFDIR:
+            printf("directory");
+            break;
+        case S_IFIFO:
+            printf("FIFO/pipe");
+            break;
+        case S_IFLNK:
+            printf("symlink");
+            break;
+        case S_IFREG:
+            printf("regular file");
+            break;
+        case S_IFSOCK:
+            printf("socket");
+            break;
+        default:
+            printf("unknown");
+            break;
+    }
     printf("\n");
 
-    // Blocks: IO Block:   [type of file]
-    // Device:  Inode:  Links:
+    //TODO: Is major number needed here
+    // Device:
+    int minor = minor(buf->st_dev);
+    printf("Device: %xh/%dd ", minor);
+
+    // Inode:
+    printf("Inode: %ld\t\t", (long) buf->st_ino);
+
+    // Links:
+    printf("Links: %ld", (long) buf->st_nlink);
+    printf("\n");
+
+    // Access: (Ownership)
+    char s[13];
+    strmode(buf->st_mode, &s);
+
+    unsigned long sugo = buf->st_mode & (S_ISUID | S_ISGID | S_ISVTX | S_IRWXU | S_IRWXG | S_IRWXO);
+    printf("Ownership: (%lo/%s)\t", sugo, s);
+    // Uid:
+    printf("Uid: %ld\t", (long) buf->st_uid);
+    // Gid:
+    printf("Gid: %ld", (long) buf->st_gid);
+    printf("\n");
+
+    // Access:
+    printf("Access: %s", ctime(&buf->st_atime));
+    // Modify:
+    printf("Modify: %s", ctime(&buf->st_mtime));
+    // Change:
+    printf("Change: %s", ctime(&buf->st_ctime));
+    printf("\n");
+
+
+    // Inode:  Links:
     // Access:  Uid:    Gid:
     // Access:
     // Modify:

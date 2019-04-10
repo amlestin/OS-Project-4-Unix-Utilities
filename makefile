@@ -7,7 +7,7 @@ mysearch: mysearch-lestin.c
 	gcc -o mysearch mysearch-lestin.c
 
 mystat: mystat-lestin.c
-	gcc -o mystat mystat-lestin.c
+	gcc -o mystat mystat-lestin.c strmode.c
 
 mytail: mytail-lestin.cj
 	gcc -o mytail mytail-lestin.c
