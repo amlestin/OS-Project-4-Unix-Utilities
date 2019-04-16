@@ -2,6 +2,7 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include <unistd.h>
+#include <string.h>
 
 int main(int argc, char *argv[]) {
 	if (argc < 4) {
@@ -22,24 +23,23 @@ int main(int argc, char *argv[]) {
 	printf("Size=%d\n", file_size);
 	fseek(file, 0, SEEK_SET);	
 	long original_position = ftell(file);
-
-
+    printf("Original position is %ld\n", original_position);
 
 
 	int newline_ctr = 0;
+//    char output_string[file_size];
 	char c;
 	fseek(file, 0, SEEK_END);
+    int offset = -2;
+    printf("Position after seeking end is %ld\n", ftell(file));
 	while (1) {
-		int loc = fseek(file, -1, SEEK_CUR);
+		int loc = ftell(file);
+		fread(&c, 1, 1, file);
 
-		if (ftell(file) == original_position)
+		printf("%c at %d\n", c, loc);
+        fseek(file, offset, SEEK_CUR);
+		if (loc  == original_position)
 			break;
-
-		c = read(file, NULL, 1);
-		if (c == '\n')
-			printf("Found a newline!\n");
-
-		printf("At: %d\n", loc);
 	}
 
 	printf("Done seeking!\n");
@@ -60,7 +60,6 @@ int main(int argc, char *argv[]) {
 		printf("%c", c);
 	}
 */
-	
-	fclose(file);
+fclose(file);
 	return 0;
 }

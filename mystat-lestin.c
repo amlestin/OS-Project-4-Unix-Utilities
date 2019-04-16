@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 
-char *path_to_file_name(char *path) {
+char *path_to_filename(char *path) {
     char *last_slash;
     char *c;
 
@@ -41,16 +41,17 @@ int main(int argc, char *argv[]) {
 
 
     // File:
-    printf("  File: `%s", path_to_file_name(path)); printf("'\n");
+    printf("  File: `%s", path_to_filename(path)); printf("'\n");
 
     // Size:
     printf("  Size: %d\t\t", buf->st_size);
 
     // Blocks:
-    printf("Blocks: %d\t\t", buf->st_blocks);
+    printf("Blocks: %d         ", buf->st_blocks);
+
 
     // IO Block
-    printf("IO Block: %d\t\t", buf->st_blksize);
+    printf("IO Block: %d  ", buf->st_blksize);
 
     // type of file
     switch(buf->st_mode & S_IFMT) {
@@ -87,7 +88,7 @@ int main(int argc, char *argv[]) {
     printf("Device: %xh/%dd ", minor);
 
     // Inode:
-    printf("Inode: %ld\t\t", (long) buf->st_ino);
+    printf("Inode: %ld\t", (long) buf->st_ino);
 
     // Links:
     printf("Links: %ld", (long) buf->st_nlink);
@@ -99,6 +100,7 @@ int main(int argc, char *argv[]) {
 
     unsigned long sugo = buf->st_mode & (S_ISUID | S_ISGID | S_ISVTX | S_IRWXU | S_IRWXG | S_IRWXO);
     printf("Ownership: (%lo/%s)\t", sugo, s);
+    printf("Ownership: (%lo/%s)\t", buf->st_mode, s);
     // Uid:
     printf("Uid: %ld\t", (long) buf->st_uid);
     // Gid:
