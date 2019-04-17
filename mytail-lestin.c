@@ -6,16 +6,24 @@
 #include <stdlib.h>
 
 int main(int argc, char *argv[]) {
-	if (argc < 4) {
+	if (argc < 2) {
 		printf("Error: Not enough arguments!\n");
 		printf("Usage: ./mytail -n [number of lines] [filename]\n");
 		return 1;
 	}
 
-	int n = atoi(argv[2]);
-	n = n + 1;
+	int n;
+	char *filename;
+	if (argc == 4) {
+		n = atoi(argv[2]);
+		n = n + 1;
+		filename = argv[3];
+	} else {
+		n = 10;
+		n = n + 1;
+		filename = argv[1];
+	}	
 
-	char *filename = argv[3];
 	FILE *file = fopen(filename, "r");
 	if (file == NULL) return 1;
 
