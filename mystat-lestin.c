@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sys/stat.h>
+#include "strmode.c"
 
 char *path_to_filename(char *path) {
     char *last_slash;
@@ -44,10 +45,10 @@ int main(int argc, char *argv[]) {
     printf("  File: `%s", path_to_filename(path)); printf("'\n");
 
     // Size:
-    printf("  Size: %d\t\t", buf->st_size);
+    printf("  Size: %lld\t\t", buf->st_size);
 
     // Blocks:
-    printf("Blocks: %d         ", buf->st_blocks);
+    printf("Blocks: %lld         ", buf->st_blocks);
 
 
     // IO Block
@@ -85,7 +86,7 @@ int main(int argc, char *argv[]) {
     //TODO: Is major number needed here
     // Device:
     int minor = minor(buf->st_dev);
-    printf("Device: %xh/%dd ", minor);
+    printf("Device: /%dd ", minor);
 
     // Inode:
     printf("Inode: %ld\t", (long) buf->st_ino);
@@ -96,11 +97,11 @@ int main(int argc, char *argv[]) {
 
     // Access: (Ownership)
     char s[13];
-    strmode(buf->st_mode, &s);
+    strmode(buf->st_mode, &s[0]);
 
     unsigned long sugo = buf->st_mode & (S_ISUID | S_ISGID | S_ISVTX | S_IRWXU | S_IRWXG | S_IRWXO);
     printf("Ownership: (%lo/%s)\t", sugo, s);
-    printf("Ownership: (%lo/%s)\t", buf->st_mode, s);
+    printf("Ownership: (%ho/%s)\t", buf->st_mode, s);
     // Uid:
     printf("Uid: %ld\t", (long) buf->st_uid);
     // Gid:
