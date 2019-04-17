@@ -20,24 +20,29 @@ int main(int argc, char *argv[]) {
 	if (stat_error != 0) return 1;
 
 	int file_size = buf.st_size;
-	printf("Size=%d\n", file_size);
+
 	fseek(file, 0, SEEK_SET);	
 	long original_position = ftell(file);
-    printf("Original position is %ld\n", original_position);
-
 
 	int newline_ctr = 0;
-//    char output_string[file_size];
 	char c;
+    int loc;
+
 	fseek(file, 0, SEEK_END);
-    int offset = -2;
-    printf("Position after seeking end is %ld\n", ftell(file));
 	while (1) {
-		int loc = ftell(file);
-		fread(&c, 1, 1, file);
+		if (fread(&c, 1, 1, file) == 0)
+            break;
 
 		printf("%c at %d\n", c, loc);
-        fseek(file, offset, SEEK_CUR);
+
+        if (c == '\n') {
+            newline_ctr++;
+            printf("Found newline #%d\n", newline_ctr);
+        }
+
+
+//        fseek(file, offset, SEEK_CUR);
+		int loc = ftell(file);
 		if (loc  == original_position)
 			break;
 	}
