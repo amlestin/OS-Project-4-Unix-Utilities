@@ -3,6 +3,7 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <string.h>
+#include <stdlib.h>
 
 int main(int argc, char *argv[]) {
 	if (argc < 4) {
@@ -10,6 +11,9 @@ int main(int argc, char *argv[]) {
 		printf("Usage: ./mytail -n [number of lines] [filename]\n");
 		return 1;
 	}
+
+	int n = atoi(argv[2]);
+	n = n + 1;
 
 	char *filename = argv[3];
 	FILE *file = fopen(filename, "r");
@@ -26,28 +30,52 @@ int main(int argc, char *argv[]) {
 
 	int newline_ctr = 0;
 	char c;
-    int loc;
-
-	fseek(file, 0, SEEK_END);
+	fseek(file, -1, SEEK_END);
+	int loc = ftell(file);
 	while (1) {
 		if (fread(&c, 1, 1, file) == 0)
             break;
+        fseek(file, -1, SEEK_CUR);
 
-		printf("%c at %d\n", c, loc);
+		loc = ftell(file);
+//		printf("%c at %d\n", c, loc);
+
 
         if (c == '\n') {
             newline_ctr++;
-            printf("Found newline #%d\n", newline_ctr);
+//            printf("Found newline #%d w/ n=%d\n", newline_ctr, n);
+
+			if (newline_ctr == n) {
+				fseek(file, 1, SEEK_CUR);
+				break;
+			}
         }
 
-
-//        fseek(file, offset, SEEK_CUR);
-		int loc = ftell(file);
-		if (loc  == original_position)
+		if (loc == original_position)
 			break;
+
+        fseek(file, -1, SEEK_CUR);
+
+		loc = ftell(file);
 	}
 
-	printf("Done seeking!\n");
+//	printf("Done seeking!\n");
+
+	while (n > 0) {
+		if (fread(&c, 1, 1, file) == 0)
+			break;
+
+		loc = ftell(file);
+//		printf("%c at %d\n", c, loc);
+		printf("%c", c);
+
+		if (c == '\n') {
+			n--;
+			if (n == 0)
+				break;
+		}
+
+	}
 
 /*
 	while (1) {
