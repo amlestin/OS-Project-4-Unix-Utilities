@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <time.h>
 #include <string.h>
 #include <pwd.h>
 #include <grp.h>
@@ -10,24 +11,18 @@
 #include "strmode.c"
 
 int main(int argc, char *argv[]) {
-/*
-    char buf[PATH_MAX];
-    char *cur_dir_path = getcwd(&buf[0], PATH_MAX);
-    printf("Current directory is %s\n", cur_dir_path);
-
-    DIR *cur_dir = opendir(cur_dir_path);
-*/
     int l_flag = 0;
     int dir_flag = 0;
 
+    // -l flag is first argument
     if (argv[1] != NULL && strcmp(argv[1], "-l") == 0) {
-        printf("%s\n", argv[1]);
         l_flag = 1;
     }
 
     char *dir_path;
     DIR *cur_dir;
-    if (!l_flag && argv[1] != NULL) {
+
+    if (!l_flag && argv[1] != NULL) { // no -l flag and a first argument (directory)
         dir_path = argv[1];
         cur_dir = opendir(dir_path);
 
@@ -35,7 +30,7 @@ int main(int argc, char *argv[]) {
             printf("Invalid directory.\n");
             return 1;
         }
-    } else if (l_flag && argv[2] != NULL) {
+    } else if (l_flag && argv[2] != NULL) { // l flag and a second argument (directory)
         dir_path = argv[2];
         cur_dir = opendir(dir_path);
 
@@ -44,12 +39,16 @@ int main(int argc, char *argv[]) {
             return 1;
         }
     }
-    else  {
-//        dir_path = malloc(sizeof(char));
-        char dp;
-        dp = '.';
+    else if (l_flag && argv[2] == NULL) { // l flag but not second argument (directory)
+        char dp[2] = ".";
 
-        dir_path = &dp;
+        dir_path = &dp[0];
+        cur_dir = opendir(dir_path);
+    } 
+    else { // no flag and no second argument (directory)
+        char dp[2] = ".";
+
+        dir_path = &dp[0];
         cur_dir = opendir(dir_path);
     }
 
@@ -94,6 +93,24 @@ int main(int argc, char *argv[]) {
             // Size
             printf("%8lld ", buf.st_size);
             free(de_absolute_path);
+
+            // Time
+            int buf_size = 69;
+            char *ctime_buf = malloc(sizeof(char) * buf_size);
+
+            struct tm *tm;
+            tm = localtime(&buf.st_ctime);
+
+            strftime(ctime_buf, buf_size, "%b %d %H:%M", tm);
+
+            char *formatted_time = ctime_buf;
+//            char *ctime_buf = ctime(&buf.st_ctime);
+//            char *formatted_time = calloc(strlen(ctime_buf) - 1, sizeof(char));
+//            strncpy(formatted_time, ctime_buf, strlen(ctime_buf) - 1);
+//            formatted_time[strlen(formatted_time) - 1] = '\0';
+
+            printf("%s ", formatted_time);
+            free(formatted_time);
         }
         printf("%s\n", de->d_name);
     }

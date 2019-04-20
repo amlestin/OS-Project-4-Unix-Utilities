@@ -116,13 +116,5 @@ int main(int argc, char *argv[]) {
     printf("Change: %s", ctime(&buf->st_ctime));
     printf("\n");
 
-
-    // Inode:  Links:
-    // Access:  Uid:    Gid:
-    // Access:
-    // Modify:
-    // Change:
-
-
     return 0;
 }
