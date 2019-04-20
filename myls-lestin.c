@@ -62,6 +62,26 @@ int main(int argc, char *argv[]) {
     realpath(dir_path, &real_path_buf[0]);
     char slash[2] = "/";
 
+    int total_file_sizes = 0;
+    while ( (de = readdir(cur_dir)) != NULL) {
+         // skip hidden files
+        if (de->d_name[0] == '.')
+            continue;
+
+        char *de_absolute_path = calloc(strlen(real_path_buf) + strlen(&slash[0]) + strlen(de->d_name) + 1, sizeof(char));
+        strcat(de_absolute_path, real_path_buf);
+        strcat(de_absolute_path, &slash[0]);
+        strcat(de_absolute_path, de->d_name);
+
+        lstat(de_absolute_path, &buf);
+
+        total_file_sizes += buf.st_blocks;
+
+        free(de_absolute_path);
+    }
+    printf("total %d\n", total_file_sizes);
+    rewinddir(cur_dir);
+
     while ( (de = readdir(cur_dir)) != NULL ) {
         // skip hidden files
         if (de->d_name[0] == '.')
