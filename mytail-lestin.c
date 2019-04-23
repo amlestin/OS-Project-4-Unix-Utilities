@@ -46,12 +46,9 @@ int main(int argc, char *argv[]) {
         fseek(file, -1, SEEK_CUR);
 
 		loc = ftell(file);
-//		printf("%c at %d\n", c, loc);
-
 
         if (c == '\n') {
             newline_ctr++;
-//            printf("Found newline #%d w/ n=%d\n", newline_ctr, n);
 
 			if (newline_ctr == n) {
 				fseek(file, 1, SEEK_CUR);
@@ -67,14 +64,16 @@ int main(int argc, char *argv[]) {
 		loc = ftell(file);
 	}
 
-//	printf("Done seeking!\n");
+	if (n > newline_ctr) {
+		printf("n is greater than the number of newlines in the file.\n");
+		return 1;
+	}
 
 	while (n > 0) {
 		if (fread(&c, 1, 1, file) == 0)
 			break;
 
 		loc = ftell(file);
-//		printf("%c at %d\n", c, loc);
 		printf("%c", c);
 
 		if (c == '\n') {
@@ -85,22 +84,6 @@ int main(int argc, char *argv[]) {
 
 	}
 
-/*
-	while (1) {
-		if (feof(file) != 0)
-			break;
-		if (ferror(file) != 0)
-			break;
-
-		c = fgetc(file);
-		if (c == '\n') {
-		       	newline_ctr++;
-			printf("\nNewlines counted: %d\n", newline_ctr); 
-		}
-
-		printf("%c", c);
-	}
-*/
 fclose(file);
 	return 0;
 }
