@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sys/stat.h>
+#include <limits.h>
 #include "strmode.c"
 
 char *path_to_filename(char *path)

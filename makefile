@@ -1,16 +1,16 @@
 all: myls mysearch mystat mytail
-	
+
 myls: myls-lestin.c strmode.c
-	gcc -o myls myls-lestin.c
+	gcc -std=c99 -D_BSD_SOURCE -o myls myls-lestin.c
 
 mysearch: mysearch-lestin.c
-	gcc -o mysearch mysearch-lestin.c
+	gcc -std=c99 -o mysearch mysearch-lestin.c
 
 mystat: mystat-lestin.c strmode.c
-	gcc -o mystat mystat-lestin.c
+	gcc -std=c99 -o mystat mystat-lestin.c
 
 mytail: mytail-lestin.c
-	gcc -o mytail mytail-lestin.c
+	gcc -std=c99 -o mytail mytail-lestin.c
 
 clean:
 	rm -f myls

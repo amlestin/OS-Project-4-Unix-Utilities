@@ -3,11 +3,13 @@
 #include <string.h>
 #include <pwd.h>
 #include <grp.h>
-#include <sys/stat.h>
 #include <dirent.h>
 #include <limits.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <unistd.h>
 #include <stdlib.h>
+
 #include "strmode.c"
 
 int main(int argc, char *argv[])
@@ -89,9 +91,8 @@ int main(int argc, char *argv[])
 
         free(de_absolute_path);
     }
-    printf("total %d\n", total_file_sizes);
+    printf("total %d\n", total_file_sizes/2); // ls uses half the default block size for stat
     rewinddir(cur_dir);
-
     while ((de = readdir(cur_dir)) != NULL)
     {
         // skip hidden files
@@ -108,6 +109,7 @@ int main(int argc, char *argv[])
             lstat(de_absolute_path, &buf);
 
             strmode(buf.st_mode, &s[0]);
+            s[strlen(s)-2] = '.';
             // Ownership
             printf("%s ", s);
 
@@ -119,15 +121,14 @@ int main(int argc, char *argv[])
             printf("%s ", cur_de_pwd->pw_name);
 
             // Group ID of owner
-            cur_de_grp = getgrgid(buf.st_gid);
-            printf("%s ", cur_de_grp->gr_name);
+            printf("%ld ", (long) buf.st_gid);
 
             // Size
-            printf("%8lld ", buf.st_size);
+            printf("%5lld ", buf.st_size);
             free(de_absolute_path);
 
             // Time
-            int buf_size = 69;
+            int buf_size = 690;
             char *ctime_buf = malloc(sizeof(char) * buf_size);
 
             struct tm *tm;
@@ -136,10 +137,6 @@ int main(int argc, char *argv[])
             strftime(ctime_buf, buf_size, "%b %d %H:%M", tm);
 
             char *formatted_time = ctime_buf;
-            //            char *ctime_buf = ctime(&buf.st_ctime);
-            //            char *formatted_time = calloc(strlen(ctime_buf) - 1, sizeof(char));
-            //            strncpy(formatted_time, ctime_buf, strlen(ctime_buf) - 1);
-            //            formatted_time[strlen(formatted_time) - 1] = '\0';
 
             printf("%s ", formatted_time);
             free(formatted_time);
