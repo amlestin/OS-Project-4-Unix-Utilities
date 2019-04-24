@@ -4,7 +4,7 @@ myls: myls-lestin.c strmode.c
 	gcc -std=c99 -D_BSD_SOURCE -o myls myls-lestin.c
 
 mysearch: mysearch-lestin.c
-	gcc -std=c99 -o mysearch mysearch-lestin.c
+	gcc -std=c99 -D_BSD_SOURCE -o mysearch mysearch-lestin.c
 
 mystat: mystat-lestin.c strmode.c
 	gcc -std=c99 -o mystat mystat-lestin.c
