@@ -129,17 +129,15 @@ int main(int argc, char *argv[])
 
             // Time
             int buf_size = 690;
-            char *ctime_buf = malloc(sizeof(char) * buf_size);
+            char *time_buf = malloc(sizeof(char) * buf_size);
 
             struct tm *tm;
             tm = localtime(&buf.st_ctime);
 
-            strftime(ctime_buf, buf_size, "%b %d %H:%M", tm);
+            strftime(time_buf, buf_size, "%b %d %H:%M", tm);
 
-            char *formatted_time = ctime_buf;
-
-            printf("%s ", formatted_time);
-            free(formatted_time);
+            printf("%s ", time_buf);
+            free(time_buf);
         }
         printf("%s\n", de->d_name);
     }

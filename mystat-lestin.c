@@ -90,10 +90,9 @@ int main(int argc, char *argv[])
     }
     printf("\n");
 
-    //TODO: Is major number needed here
     // Device:
     int minor = minor(buf->st_dev);
-    printf("Device: /%dd ", minor);
+    printf("Device: %xh/%dd ", minor, minor);
 
     // Inode:
     printf("Inode: %ld\t", (long)buf->st_ino);
@@ -115,13 +114,36 @@ int main(int argc, char *argv[])
     printf("Gid: %ld", (long)buf->st_gid);
     printf("\n");
 
+    int buf_size = 512;
+    char *a_time_buf = malloc(sizeof(char) * buf_size);
+    char *m_time_buf = malloc(sizeof(char) * buf_size);
+    char *c_time_buf = malloc(sizeof(char) * buf_size);
+
+    struct tm *a_tm;
+    struct tm *m_tm;
+    struct tm *c_tm;
+
+    a_tm = localtime(&buf->st_atime);
+    m_tm = localtime(&buf->st_mtime);
+    c_tm = localtime(&buf->st_ctime);
+
+    strftime(a_time_buf, buf_size, "%F %T %z", a_tm);
+    strftime(m_time_buf, buf_size, "%F %T %z", m_tm);
+    strftime(c_time_buf, buf_size, "%F %T %z", c_tm);
+
     // Access:
-    printf("Access: %s", ctime(&buf->st_atime));
-    // Modify:
-    printf("Modify: %s", ctime(&buf->st_mtime));
-    // Change:
-    printf("Change: %s", ctime(&buf->st_ctime));
+    printf("Access: %s", a_time_buf);
     printf("\n");
+    // Modify:
+    printf("Modify: %s", m_time_buf);
+    printf("\n");
+    // Change:
+    printf("Change: %s", c_time_buf);
+    printf("\n");
+
+    free(a_time_buf);
+    free(m_time_buf);
+    free(c_time_buf);
 
     return 0;
 }
