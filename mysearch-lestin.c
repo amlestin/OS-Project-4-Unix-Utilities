@@ -11,11 +11,13 @@ int main(int argc, char *argv[])
 {
     char *starting_directory;
 
+    // get the path of the directory the program is called from
     char *current_dir = malloc(sizeof(char) * MAXPATHLEN);
     getcwd(current_dir, MAXPATHLEN);
 
     if (argv[1] == NULL)
     {
+        // default to the current directory if the user did not give one
         starting_directory = current_dir;
     }
     else
@@ -23,11 +25,14 @@ int main(int argc, char *argv[])
         starting_directory = argv[1];
     }
 
+    // print the directory the search starts at
     printf("%s\n", starting_directory);
 
+    // recursively print every part of the directory tree
     print_until_end(starting_directory, 0);
 
     free(current_dir);
+
     return 0;
 }
 
@@ -42,14 +47,16 @@ void print_until_end(char *path_to_dir, int indent)
     }
 
     struct dirent *de;
-
     while ((de = readdir(cur_dir)) != NULL)
     {
+        // ignore references to the current and parent directories
         if (de->d_name[0] == '.')
             continue;
 
+        // call the recursive function on entries that are directories
         if (de->d_type == DT_DIR)
         {
+            // indent the output of directory entry names
             for (int i = 0; i < indent; i++)
             {
                 printf(" ");
@@ -57,12 +64,13 @@ void print_until_end(char *path_to_dir, int indent)
             printf("├");
             printf("──%s\n", de->d_name);
 
-            char slash[2] = "/";
+            // extend the current path with the next directory's name
             char *new_path = calloc(strlen(&slash[0]) + strlen(path_to_dir) + strlen(de->d_name) + 1, sizeof(char));
             strcat(new_path, path_to_dir);
             strcat(new_path, &slash[0]);
             strcat(new_path, de->d_name);
 
+            // have the next directory indent its print statements by 4 more than the parent's
             int new_indent = indent + 4;
             print_until_end(new_path, new_indent);
 
@@ -70,6 +78,7 @@ void print_until_end(char *path_to_dir, int indent)
         }
         else
         {
+            // indent the output of directory entry names
             for (int i = 0; i < indent; i++)
             {
                 printf(" ");
