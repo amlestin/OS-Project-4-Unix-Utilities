@@ -145,6 +145,6 @@ strmode(mode, p)
 		*p++ = 't';
 		break;
 	}
-	*p++ = ' ';		/* will be a '+' if ACL's implemented */
+//	*p++ = ' ';		/* will be a '+' if ACL's implemented */
 	*p = '\0';
 }

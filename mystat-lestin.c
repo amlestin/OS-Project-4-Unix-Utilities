@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <grp.h>
+#include <pwd.h>
 #include <time.h>
 #include <string.h>
 #include <stdlib.h>
@@ -104,14 +106,23 @@ int main(int argc, char *argv[])
     // Access: (Ownership)
     char s[13];
     strmode(buf->st_mode, &s[0]);
+    printf("Access: (%ho/%s)\t", buf->st_mode, s);
 
-    unsigned long sugo = buf->st_mode & (S_ISUID | S_ISGID | S_ISVTX | S_IRWXU | S_IRWXG | S_IRWXO);
-    printf("Ownership: (%lo/%s)\t", sugo, s);
-    printf("Ownership: (%ho/%s)\t", buf->st_mode, s);
     // Uid:
-    printf("Uid: %ld\t", (long)buf->st_uid);
+    struct passwd *cur_pwd = getpwuid(buf->st_uid);
+    printf("Uid: (%ld/ %s)\t", (long)buf->st_uid, cur_pwd->pw_name);
+
     // Gid:
-    printf("Gid: %ld", (long)buf->st_gid);
+    struct group *grp = getgrgid(buf->st_gid);
+
+    if (grp != NULL) {
+        printf("Gid: (%ld/ %s)", (long)buf->st_gid, grp->gr_name);
+    }
+    else
+    { 
+        printf("Gid: (%ld/ UNKNOWN)", (long)buf->st_gid);
+
+    }
     printf("\n");
 
     int buf_size = 512;

@@ -73,25 +73,29 @@ int main(int argc, char *argv[])
     realpath(dir_path, &real_path_buf[0]);
     char slash[2] = "/";
 
-    int total_file_sizes = 0;
-    while ((de = readdir(cur_dir)) != NULL)
+    if (l_flag == 1)
     {
-        // skip hidden files
-        if (de->d_name[0] == '.')
-            continue;
+        int total_file_sizes = 0;
+        while ((de = readdir(cur_dir)) != NULL)
+        {
+            // skip hidden files
+            if (de->d_name[0] == '.')
+                continue;
 
-        char *de_absolute_path = calloc(strlen(real_path_buf) + strlen(&slash[0]) + strlen(de->d_name) + 1, sizeof(char));
-        strcat(de_absolute_path, real_path_buf);
-        strcat(de_absolute_path, &slash[0]);
-        strcat(de_absolute_path, de->d_name);
+            char *de_absolute_path = calloc(strlen(real_path_buf) + strlen(&slash[0]) + strlen(de->d_name) + 1, sizeof(char));
+            strcat(de_absolute_path, real_path_buf);
+            strcat(de_absolute_path, &slash[0]);
+            strcat(de_absolute_path, de->d_name);
 
-        lstat(de_absolute_path, &buf);
+            lstat(de_absolute_path, &buf);
 
-        total_file_sizes += buf.st_blocks;
+            total_file_sizes += buf.st_blocks;
 
-        free(de_absolute_path);
+            free(de_absolute_path);
+        }
+        printf("total %d\n", total_file_sizes/2); // ls uses half the default block size for stat
     }
-    printf("total %d\n", total_file_sizes/2); // ls uses half the default block size for stat
+
     rewinddir(cur_dir);
     while ((de = readdir(cur_dir)) != NULL)
     {
@@ -108,10 +112,10 @@ int main(int argc, char *argv[])
 
             lstat(de_absolute_path, &buf);
 
-            strmode(buf.st_mode, &s[0]);
-            s[strlen(s)-2] = '.';
             // Ownership
+            strmode(buf.st_mode, &s[0]);
             printf("%s ", s);
+            // could not print "." or "+" character (SElinux file context) because I could not link the library libselinux with necessary function getfilecon() 
 
             // Number of links
             printf("%d ", buf.st_nlink);
@@ -139,8 +143,15 @@ int main(int argc, char *argv[])
             printf("%s ", time_buf);
             free(time_buf);
         }
-        printf("%s\n", de->d_name);
+        if (l_flag == 1) {
+            printf("%s\n", de->d_name);
+        } else {
+            printf("%s\t", de->d_name);
+        }
+
     }
+    if (!l_flag)
+        printf("\n");
 
     closedir(cur_dir);
     return 0;
