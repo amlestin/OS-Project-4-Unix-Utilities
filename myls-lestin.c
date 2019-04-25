@@ -9,7 +9,6 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdlib.h>
-
 #include "strmode.c"
 
 int main(int argc, char *argv[])
@@ -93,7 +92,7 @@ int main(int argc, char *argv[])
 
             free(de_absolute_path);
         }
-        printf("total %d\n", total_file_sizes/2); // ls uses half the default block size for stat
+        printf("total %d\n", total_file_sizes / 2); // ls uses half the default block size for stat
     }
 
     rewinddir(cur_dir);
@@ -115,7 +114,7 @@ int main(int argc, char *argv[])
             // Ownership
             strmode(buf.st_mode, &s[0]);
             printf("%s ", s);
-            // could not print "." or "+" character (SElinux file context) because I could not link the library libselinux with necessary function getfilecon() 
+            // could not print "." or "+" character (SElinux file context) because I could not link the library libselinux with necessary function getfilecon()
 
             // Number of links
             printf("%d ", buf.st_nlink);
@@ -125,7 +124,7 @@ int main(int argc, char *argv[])
             printf("%s ", cur_de_pwd->pw_name);
 
             // Group ID of owner
-            printf("%ld ", (long) buf.st_gid);
+            printf("%ld ", (long)buf.st_gid);
 
             // Size
             printf("%5lld ", buf.st_size);
@@ -143,12 +142,14 @@ int main(int argc, char *argv[])
             printf("%s ", time_buf);
             free(time_buf);
         }
-        if (l_flag == 1) {
+        if (l_flag == 1)
+        {
             printf("%s\n", de->d_name);
-        } else {
+        }
+        else
+        {
             printf("%s\t", de->d_name);
         }
-
     }
     if (!l_flag)
         printf("\n");

@@ -115,13 +115,13 @@ int main(int argc, char *argv[])
     // Gid:
     struct group *grp = getgrgid(buf->st_gid);
 
-    if (grp != NULL) {
+    if (grp != NULL)
+    {
         printf("Gid: (%ld/ %s)", (long)buf->st_gid, grp->gr_name);
     }
     else
-    { 
+    {
         printf("Gid: (%ld/ UNKNOWN)", (long)buf->st_gid);
-
     }
     printf("\n");
 
